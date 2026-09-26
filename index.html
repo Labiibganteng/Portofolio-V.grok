@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LABIIB AL GHOFFUUR — Cybersecurity & Polyglot</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #09090b;
+    --surface: #111113;
+    --surface2: #18181b;
+    --border: #27272a;
+    --text: #fafafa;
+    --muted: #a1a1aa;
+    --accent: #22d3ee;
+    --accent-dim: rgba(34, 211, 238, 0.12);
+    --radius: 12px;
+    --font: 'Inter', system-ui, sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+  }
+
+  body.light {
+    --bg: #fafafa;
+    --surface: #ffffff;
+    --surface2: #f4f4f5;
+    --border: #e4e4e7;
+    --text: #09090b;
+    --muted: #71717a;
+    --accent: #0891b2;
+    --accent-dim: rgba(8, 145, 178, 0.1);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    overflow-x: hidden;
+    transition: background 0.3s, color 0.3s;
+  }
+
+  /* ===== LOADER ===== */
+  .loader {
+    position: fixed; inset: 0; z-index: 9999;
+    background: #000;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    transition: opacity 0.6s ease, visibility 0.6s;
+  }
+  .loader.hide { opacity: 0; visibility: hidden; }
+  .loader-brand {
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    letter-spacing: 4px;
+    color: var(--accent);
+    margin-bottom: 28px;
+  }
+  .loader-track {
+    width: 180px; height: 2px;
+    background: #222;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .loader-bar {
+    height: 100%; width: 0%;
+    background: var(--accent);
+    transition: width 0.12s linear;
+  }
+
+  /* ===== NAV ===== */
+  .nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    padding: 16px 24px;
+    display: flex; justify-content: space-between; align-items: center;
+    background: rgba(9,9,11,0.7);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.3s, background 0.3s;
+  }
+  body.light .nav { background: rgba(250,250,250,0.8); }
+  .nav.scrolled { border-color: var(--border); }
+  .nav-logo {
+    font-family: var(--mono);
+    font-weight: 500;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+    color: var(--text);
+    text-decoration: none;
+  }
+  .nav-logo span { color: var(--accent); }
+  .nav-links {
+    display: flex; gap: 28px; list-style: none;
+  }
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover,
+  .nav-links a.active { color: var(--text); }
+  .nav-actions { display: flex; gap: 8px; }
+  .nav-btn {
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--muted);
+    cursor: pointer;
+    display: grid; place-items: center;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+  }
+  .nav-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ===== SECTIONS ===== */
+  section {
+    padding: 100px 24px 80px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .section-label {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .section-title {
+    font-size: clamp(1.75rem, 4vw, 2.25rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 40px;
+  }
+
+  /* ===== HOME ===== */
+  #home {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 48px;
+    align-items: center;
+    padding-top: 120px;
+  }
+  .home-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.8rem;
+    font-family: var(--mono);
+    color: var(--accent);
+    background: var(--accent-dim);
+    padding: 6px 12px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+  }
+  .home-badge::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+  .home-title {
+    font-size: clamp(2.4rem, 5.5vw, 3.5rem);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    margin-bottom: 16px;
+  }
+  .home-title span { color: var(--accent); }
+  .home-tagline {
+    font-size: 1.05rem;
+    color: var(--muted);
+    max-width: 480px;
+    margin-bottom: 12px;
+  }
+  .home-role {
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    color: var(--accent);
+    margin-bottom: 28px;
+  }
+  .home-desc {
+    color: var(--muted);
+    font-size: 0.95rem;
+    max-width: 480px;
+    margin-bottom: 32px;
+  }
+  .btn-group { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 32px; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 12px 22px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s;
+    cursor: pointer;
+    border: none;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #000;
+  }
+  .btn-primary:hover { filter: brightness(1.1); transform: translateY(-1px); }
+  .btn-secondary {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+  .socials { display: flex; gap: 10px; }
+  .socials a {
+    width: 38px; height: 38px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    display: grid; place-items: center;
+    color: var(--muted);
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  .socials a:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--accent-dim);
+  }
+
+  /* Photo */
+  .photo-wrap {
+    position: relative;
+    width: 100%;
+    max-width: 340px;
+    margin: 0 auto;
+  }
+  .photo-frame {
+    position: relative;
+    aspect-ratio: 3/4;
+    border-radius: var(--radius);
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    cursor: pointer;
+  }
+  .photo-frame img {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: opacity 0.4s ease;
+  }
+  .photo-frame .formal { opacity: 1; z-index: 2; }
+  .photo-frame .hacker { opacity: 0; z-index: 1; }
+  .photo-frame:hover .formal,
+  .photo-frame.flip .formal { opacity: 0; }
+  .photo-frame:hover .hacker,
+  .photo-frame.flip .hacker {
+    opacity: 1;
+    animation: glitch 0.3s ease;
+  }
+  @keyframes glitch {
+    0%, 100% { transform: none; filter: none; }
+    25% { transform: translate(-3px, 2px); filter: hue-rotate(90deg); }
+    50% { transform: translate(3px, -2px); filter: hue-rotate(180deg); }
+    75% { transform: translate(-2px, -1px); filter: hue-rotate(270deg); }
+  }
+  .photo-hint {
+    position: absolute; bottom: 12px; left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.7);
+    color: #fff;
+    font-size: 0.7rem;
+    padding: 4px 12px;
+    border-radius: 20px;
+    opacity: 0;
+    transition: opacity 0.25s;
+    pointer-events: none;
+    z-index: 3;
+    white-space: nowrap;
+  }
+  .photo-frame:hover .photo-hint { opacity: 1; }
+  .photo-corner {
+    position: absolute;
+    width: 16px; height: 16px;
+    border: 2px solid var(--accent);
+    z-index: 4;
+  }
+  .photo-corner.tl { top: -1px; left: -1px; border-right: none; border-bottom: none; }
+  .photo-corner.tr { top: -1px; right: -1px; border-left: none; border-bottom: none; }
+  .photo-corner.bl { bottom: -1px; left: -1px; border-right: none; border-top: none; }
+  .photo-corner.br { bottom: -1px; right: -1px; border-left: none; border-top: none; }
+
+  /* ===== ABOUT ===== */
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  .about-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+  }
+  .about-card h3 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-bottom: 16px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .about-card h3 i { color: var(--accent); }
+  .about-card ul { list-style: none; }
+  .about-card li {
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 0.9rem;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .about-card li:last-child { border-bottom: none; }
+  .about-card li::before {
+    content: '';
+    width: 4px; height: 4px;
+    background: var(--accent);
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 32px;
+  }
+  .stat {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px 16px;
+    text-align: center;
+    transition: border-color 0.2s;
+  }
+  .stat:hover { border-color: var(--accent); }
+  .stat-num {
+    font-size: 2.4rem;
+    font-weight: 800;
+    color: var(--accent);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .stat-label {
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-top: 6px;
+  }
+
+  /* ===== PORTFOLIO ===== */
+  .tabs {
+    display: flex; gap: 8px; margin-bottom: 32px; flex-wrap: wrap;
+  }
+  .tab {
+    padding: 8px 18px;
+    border-radius: 8px;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .tab.active, .tab:hover {
+    background: var(--accent);
+    color: #000;
+    border-color: var(--accent);
+  }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; animation: fadeIn 0.35s ease; }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: none; }
+  }
+
+  .proj-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+  }
+  .proj-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    transition: all 0.25s;
+    display: flex; flex-direction: column;
+  }
+  .proj-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-3px);
+  }
+  .proj-icon {
+    width: 40px; height: 40px;
+    border-radius: 8px;
+    background: var(--accent-dim);
+    color: var(--accent);
+    display: grid; place-items: center;
+    font-size: 1.1rem;
+    margin-bottom: 14px;
+  }
+  .proj-card h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .proj-card p {
+    font-size: 0.85rem;
+    color: var(--muted);
+    flex: 1;
+  }
+
+  /* Certificates */
+  .cert-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+  }
+  .cert-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.25s;
+  }
+  .cert-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-3px);
+  }
+  .cert-card img {
+    width: 100%; height: 160px;
+    object-fit: cover;
+    border-bottom: 1px solid var(--border);
+  }
+  .cert-info { padding: 16px; }
+  .cert-info h3 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .cert-info h3 i { color: var(--accent); font-size: 0.85rem; }
+  .cert-info p { font-size: 0.8rem; color: var(--muted); }
+  .cert-year {
+    display: inline-block;
+    margin-top: 10px;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--accent);
+  }
+
+  /* Tech */
+  .tech-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+  }
+  .tech-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+  }
+  .tech-box h4 {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 14px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .tech-box h4 i { color: var(--accent); }
+  .tech-list { display: flex; flex-wrap: wrap; gap: 8px; }
+  .tech-item {
+    font-size: 0.8rem;
+    padding: 5px 12px;
+    border-radius: 6px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    transition: all 0.2s;
+  }
+  .tech-item:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* ===== CONTACT ===== */
+  .contact-inner {
+    max-width: 560px;
+    margin: 0 auto;
+  }
+  .contact-form {
+    display: flex; flex-direction: column; gap: 12px;
+    margin-bottom: 36px;
+  }
+  .contact-form input,
+  .contact-form textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 0.9rem;
+    transition: border-color 0.2s;
+  }
+  .contact-form input:focus,
+  .contact-form textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+  .contact-form textarea { min-height: 120px; resize: vertical; }
+  .contact-form button { width: 100%; justify-content: center; }
+  .find-me { text-align: center; }
+  .find-me h3 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-bottom: 14px;
+  }
+  .find-me .socials { justify-content: center; }
+  .email-line {
+    margin-top: 14px;
+    font-size: 0.85rem;
+    color: var(--muted);
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+
+  /* ===== LIGHTBOX ===== */
+  .lightbox {
+    display: none;
+    position: fixed; inset: 0; z-index: 9999;
+    background: rgba(0,0,0,0.92);
+    align-items: center; justify-content: center;
+    padding: 20px;
+  }
+  .lightbox.show { display: flex; }
+  .lightbox img {
+    max-width: 90%; max-height: 85vh;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+  }
+  .lb-close {
+    position: absolute; top: 20px; right: 20px;
+    width: 40px; height: 40px;
+    border-radius: 8px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-size: 1.3rem;
+    display: grid; place-items: center;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .lb-close:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ===== FOOTER ===== */
+  footer {
+    text-align: center;
+    padding: 32px 24px;
+    border-top: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 0.8rem;
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 900px) {
+    #home {
+      grid-template-columns: 1fr;
+      text-align: center;
+      padding-top: 100px;
+    }
+    .home-tagline, .home-desc { margin-left: auto; margin-right: auto; }
+    .btn-group, .socials { justify-content: center; }
+    .photo-wrap { max-width: 280px; }
+  }
+  @media (max-width: 700px) {
+    .nav-links { display: none; }
+    .about-grid { grid-template-columns: 1fr; }
+    .stats { grid-template-columns: 1fr; }
+    section { padding: 80px 16px 60px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- LOADER -->
+<div class="loader" id="loader">
+  <div class="loader-brand">LABIIB // SYSTEM</div>
+  <div class="loader-track"><div class="loader-bar" id="loaderBar"></div></div>
+</div>
+
+<!-- NAV -->
+<header class="nav" id="nav">
+  <a href="#home" class="nav-logo">LABIIB<span>.</span></a>
+  <ul class="nav-links">
+    <li><a href="#home" class="active" data-i18n="nav_home">Beranda</a></li>
+    <li><a href="#about" data-i18n="nav_about">Tentang</a></li>
+    <li><a href="#portfolio" data-i18n="nav_portfolio">Portofolio</a></li>
+    <li><a href="#contact" data-i18n="nav_contact">Kontak</a></li>
+  </ul>
+  <div class="nav-actions">
+    <button class="nav-btn" id="themeBtn" title="Theme">🌙</button>
+    <button class="nav-btn" id="langBtn" title="Language">EN</button>
+  </div>
+</header>
+
+<!-- HOME -->
+<section id="home">
+  <div>
+    <div class="home-badge" data-i18n="home_badge">Available for collaboration</div>
+    <h1 class="home-title" data-i18n="home_title">Hai, saya<br><span>LABIIB AL<br>GHOFFUUR</span></h1>
+    <p class="home-tagline" data-i18n="home_tagline">Membangun Generasi Bangsa yang Berdaya Melalui Teknologi & Keamanan Siber</p>
+    <p class="home-role" data-i18n="home_role">Cybersecurity Enthusiast · Polyglot · Independent Learner</p>
+    <p class="home-desc" data-i18n="home_desc">Pembelajar mandiri dengan passion di bidang cybersecurity dan pengembangan aplikasi. Menguasai bahasa Rusia, Spanyol, dan Turki — kemampuan yang melatih cara berpikir analitis, teliti, dan adaptif.</p>
+    <div class="btn-group">
+      <a href="#portfolio" class="btn btn-primary" data-i18n="btn_projects">Lihat Proyek</a>
+      <a href="#contact" class="btn btn-secondary" data-i18n="btn_contact">Hubungi Saya</a>
+    </div>
+    <div class="socials">
+      <a href="https://www.tiktok.com/@xiao_bi_?_r=1&_t=ZS-9A1m0faOOQ8" target="_blank" rel="noopener" title="TikTok"><i class="fab fa-tiktok"></i></a>
+      <a href="https://www.instagram.com/xiaobi_03" target="_blank" rel="noopener" title="Instagram"><i class="fab fa-instagram"></i></a>
+      <a href="mailto:anakbahasainternational@gmail.com" title="Email"><i class="fas fa-envelope"></i></a>
+    </div>
+  </div>
+  <div class="photo-wrap">
+    <div class="photo-frame" id="photoBox">
+      <div class="photo-corner tl"></div>
+      <div class="photo-corner tr"></div>
+      <div class="photo-corner bl"></div>
+      <div class="photo-corner br"></div>
+      <img src="fotoformal.jpg" alt="Labiib Formal" class="formal">
+      <img src="foto.hacker.jpg" alt="Labiib Hacker" class="hacker">
+      <div class="photo-hint" data-i18n="profile_hint">Ketuk untuk mengungkap</div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-label" data-i18n="about_label">01 — About</div>
+  <h2 class="section-title" data-i18n="about_title">Tentang Saya</h2>
+  <div class="about-grid">
+    <div class="about-card">
+      <h3><i class="fas fa-users"></i> <span data-i18n="about_org_title">Organisasi & Pengalaman</span></h3>
+      <ul>
+        <li>Paskibra SMPN 1 Balongan</li>
+        <li>Paskibra Bandung Barat</li>
+        <li>Paskibra Kecamatan Lohbener</li>
+        <li>PMR (Palang Merah Remaja)</li>
+        <li>Pramuka</li>
+        <li>Russian Language Class</li>
+        <li>Spanish Language Class</li>
+      </ul>
+    </div>
+    <div class="about-card">
+      <h3><i class="fas fa-code"></i> <span data-i18n="about_skills_title">Keahlian</span></h3>
+      <ul>
+        <li data-i18n="skill_1">Fundamental Keamanan Siber</li>
+        <li data-i18n="skill_2">Pengembangan Web & Mobile</li>
+        <li data-i18n="skill_3">Integrasi AI</li>
+        <li data-i18n="skill_4">Pembelajaran Bahasa (RU · ES · TR)</li>
+        <li data-i18n="skill_5">Linux & Terminal</li>
+        <li data-i18n="skill_6">Pengembangan Aplikasi</li>
+      </ul>
+    </div>
+  </div>
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-num" data-target="9">0</div>
+      <div class="stat-label" data-i18n="stat_projects">Proyek</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num" data-target="7">0</div>
+      <div class="stat-label" data-i18n="stat_orgs">Organisasi</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num" data-target="3">0</div>
+      <div class="stat-label" data-i18n="stat_langs">Bahasa</div>
+    </div>
+  </div>
+</section>
+
+<!-- PORTFOLIO -->
+<section id="portfolio">
+  <div class="section-label" data-i18n="portfolio_label">02 — Work</div>
+  <h2 class="section-title" data-i18n="portfolio_title">Portofolio</h2>
+  <div class="tabs">
+    <button class="tab active" data-tab="projects" data-i18n="tab_projects">Proyek</button>
+    <button class="tab" data-tab="certs" data-i18n="tab_certs">Sertifikat</button>
+    <button class="tab" data-tab="tech" data-i18n="tab_tech">Tech Stack</button>
+  </div>
+
+  <div id="projects" class="tab-panel active">
+    <div class="proj-grid">
+      <div class="proj-card">
+        <div class="proj-icon"><i class="fas fa-robot"></i></div>
+        <h3>LABIIB AI (GHOF AI)</h3>
+        <p data-i18n="proj_ai">Asisten pribadi berbasis AI untuk produktivitas dan automasi tugas harian.</p>
+      </div>
+      <div class="proj-card">
+        <div class="proj-icon"><i class="fas fa-shield-halved"></i></div>
+        <h3>Cybersecurity Scripts</h3>
+        <p data-i18n="proj_cyber">Kumpulan script & tools otomasi untuk analisis keamanan siber.</p>
+      </div>
+      <div class="proj-card">
+        <div class="proj-icon"><i class="fas fa-language"></i></div>
+        <h3>Uchi Russkiy</h3>
+        <p data-i18n="proj_rus">Aplikasi interaktif belajar Bahasa Rusia yang mudah dan menyenangkan.</p>
+      </div>
+      <div class="proj-card">
+        <div class="proj-icon"><i class="fas fa-dragon"></i></div>
+        <h3>LabiibChine</h3>
+        <p data-i18n="proj_chi">Platform belajar Bahasa Mandarin dari level pemula hingga menengah.</p>
+      </div>
+      <div class="proj-card">
+        <div class="proj-icon"><i class="fas fa-torii-gate"></i></div>
+        <h3>Kotoba N5</h3>
+        <p data-i18n="proj_jp1">Aplikasi hafalan kosakata Bahasa Jepang level N5.</p>
+      </div>
+      <div class="proj-card">
+        <div class="proj-icon"><i class="fas fa-book-open"></i></div>
+        <h3>Hiragana</h3>
+        <p data-i18n="proj_jp2">Belajar menulis & membaca huruf Hiragana dengan latihan interaktif.</p>
+      </div>
+      <div class="proj-card">
+        <div class="proj-icon"><i class="fas fa-quran"></i></div>
+        <h3>NgajiKu</h3>
+        <p data-i18n="proj_ngaji">Aplikasi digital untuk belajar mengaji dan Al-Qur'an.</p>
+      </div>
+      <div class="proj-card">
+        <div class="proj-icon"><i class="fas fa-list-check"></i></div>
+        <h3>LABIIB Study Planner</h3>
+        <p data-i18n="proj_study">To-do list & perencana studi untuk manajemen waktu belajar.</p>
+      </div>
+      <div class="proj-card">
+        <div class="proj-icon"><i class="fas fa-people-roof"></i></div>
+        <h3>LABIIB Parent</h3>
+        <p data-i18n="proj_parent">Aplikasi pendukung edukasi dan parenting.</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="certs" class="tab-panel">
+    <div class="cert-grid">
+      <div class="cert-card" onclick="openLb('cert2.jpg')">
+        <img src="cert2.jpg" alt="Russian Certificate">
+        <div class="cert-info">
+          <h3><i class="fas fa-certificate"></i> <span data-i18n="cert1_title">Bahasa Rusia (CEFR B1/B2)</span></h3>
+          <p data-i18n="cert1_desc">Sertifikasi kemampuan bahasa Rusia tingkat menengah/mahir.</p>
+          <span class="cert-year">2024</span>
+        </div>
+      </div>
+      <div class="cert-card" onclick="openLb('cert1.jpg')">
+        <img src="cert1.jpg" alt="BahasaKita Certificate">
+        <div class="cert-info">
+          <h3><i class="fas fa-certificate"></i> <span data-i18n="cert2_title">Sertifikat BahasaKita.id</span></h3>
+          <p data-i18n="cert2_desc">Sertifikat peserta webinar “Belajar Bahasa di Era Digital”.</p>
+          <span class="cert-year">21 Oktober 2021</span>
+        </div>
+      </div>
+      <div class="cert-card" onclick="openLb('cert3.jpg')">
+        <img src="cert3.jpg" alt="PORSIMAPTAR Certificate">
+        <div class="cert-info">
+          <h3><i class="fas fa-certificate"></i> <span data-i18n="cert3_title">PORSIMAPTAR XXI “Eye of Universe”</span></h3>
+          <p data-i18n="cert3_desc">Sertifikat peserta webinar astronomi & sains nasional.</p>
+          <span class="cert-year">19–21 Oktober 2021</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="tech" class="tab-panel">
+    <div class="tech-grid">
+      <div class="tech-box">
+        <h4><i class="fas fa-toolbox"></i> <span data-i18n="tech_dev_title">Alat Pengembangan</span></h4>
+        <div class="tech-list">
+          <span class="tech-item">GitHub</span>
+          <span class="tech-item">Netlify</span>
+          <span class="tech-item">Vercel</span>
+          <span class="tech-item">Termux</span>
+        </div>
+      </div>
+      <div class="tech-box">
+        <h4><i class="fas fa-brain"></i> <span data-i18n="tech_ai_title">Alat AI & LLM</span></h4>
+        <div class="tech-list">
+          <span class="tech-item">Gemini</span>
+          <span class="tech-item">ChatGPT</span>
+          <span class="tech-item">DeepSeek</span>
+          <span class="tech-item">Qwen</span>
+          <span class="tech-item">Ollama</span>
+          <span class="tech-item">Hugging Face</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-label" data-i18n="contact_label">03 — Contact</div>
+  <h2 class="section-title" data-i18n="contact_title">Hubungi Saya</h2>
+  <div class="contact-inner">
+    <form class="contact-form" onsubmit="event.preventDefault(); alert(T[lang].alert_sent);">
+      <input type="text" data-i18n-ph="form_name" placeholder="Nama Anda" required>
+      <input type="email" data-i18n-ph="form_email" placeholder="Email Anda" required>
+      <textarea data-i18n-ph="form_msg" placeholder="Pesan Anda..." required></textarea>
+      <button type="submit" class="btn btn-primary">
+        <i class="fas fa-paper-plane"></i> <span data-i18n="form_submit">Kirim Pesan</span>
+      </button>
+    </form>
+    <div class="find-me">
+      <h3 data-i18n="findme_title">Temukan Saya</h3>
+      <div class="socials">
+        <a href="https://www.tiktok.com/@xiao_bi_?_r=1&_t=ZS-9A1m0faOOQ8" target="_blank" rel="noopener"><i class="fab fa-tiktok"></i></a>
+        <a href="https://www.instagram.com/xiaobi_03" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
+        <a href="mailto:anakbahasainternational@gmail.com"><i class="fas fa-envelope"></i></a>
+      </div>
+      <p class="email-line"><i class="fas fa-envelope"></i> anakbahasainternational@gmail.com</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>© 2025 LABIIB AL GHOFFUUR. <span data-i18n="footer_rights">Hak cipta dilindungi.</span></p>
+</footer>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" onclick="if(event.target===this)closeLb()">
+  <div class="lb-close" onclick="closeLb()">×</div>
+  <img src="" alt="Certificate" id="lbImg">
+</div>
+
+<script>
+const T = {
+  id: {
+    loading: "LABIIB // SYSTEM",
+    nav_home: "Beranda", nav_about: "Tentang", nav_portfolio: "Portofolio", nav_contact: "Kontak",
+    home_badge: "Terbuka untuk kolaborasi",
+    home_title: "Hai, saya<br><span>LABIIB AL<br>GHOFFUUR</span>",
+    home_tagline: "Membangun Generasi Bangsa yang Berdaya Melalui Teknologi & Keamanan Siber",
+    home_role: "Antusias Keamanan Siber · Poliglot · Pembelajar Mandiri",
+    home_desc: "Pembelajar mandiri dengan passion di bidang cybersecurity dan pengembangan aplikasi. Menguasai bahasa Rusia, Spanyol, dan Turki — kemampuan yang melatih cara berpikir analitis, teliti, dan adaptif.",
+    btn_projects: "Lihat Proyek", btn_contact: "Hubungi Saya",
+    profile_hint: "Ketuk untuk mengungkap",
+    about_label: "01 — Tentang", about_title: "Tentang Saya",
+    about_org_title: "Organisasi & Pengalaman", about_skills_title: "Keahlian",
+    skill_1: "Fundamental Keamanan Siber", skill_2: "Pengembangan Web & Mobile",
+    skill_3: "Integrasi AI", skill_4: "Pembelajaran Bahasa (RU · ES · TR)",
+    skill_5: "Linux & Terminal", skill_6: "Pengembangan Aplikasi",
+    stat_projects: "Proyek", stat_orgs: "Organisasi", stat_langs: "Bahasa",
+    portfolio_label: "02 — Karya", portfolio_title: "Portofolio",
+    tab_projects: "Proyek", tab_certs: "Sertifikat", tab_tech: "Tech Stack",
+    proj_ai: "Asisten pribadi berbasis AI untuk produktivitas dan automasi tugas harian.",
+    proj_cyber: "Kumpulan script & tools otomasi untuk analisis keamanan siber.",
+    proj_rus: "Aplikasi interaktif belajar Bahasa Rusia yang mudah dan menyenangkan.",
+    proj_chi: "Platform belajar Bahasa Mandarin dari level pemula hingga menengah.",
+    proj_jp1: "Aplikasi hafalan kosakata Bahasa Jepang level N5.",
+    proj_jp2: "Belajar menulis & membaca huruf Hiragana dengan latihan interaktif.",
+    proj_ngaji: "Aplikasi digital untuk belajar mengaji dan Al-Qur'an.",
+    proj_study: "To-do list & perencana studi untuk manajemen waktu belajar.",
+    proj_parent: "Aplikasi pendukung edukasi dan parenting.",
+    cert1_title: "Bahasa Rusia (CEFR B1/B2)",
+    cert1_desc: "Sertifikasi kemampuan bahasa Rusia tingkat menengah/mahir.",
+    cert2_title: "Sertifikat BahasaKita.id",
+    cert2_desc: "Sertifikat peserta webinar “Belajar Bahasa di Era Digital”.",
+    cert3_title: "PORSIMAPTAR XXI “Eye of Universe”",
+    cert3_desc: "Sertifikat peserta webinar astronomi & sains nasional.",
+    tech_dev_title: "Alat Pengembangan", tech_ai_title: "Alat AI & LLM",
+    contact_label: "03 — Kontak", contact_title: "Hubungi Saya",
+    form_name: "Nama Anda", form_email: "Email Anda", form_msg: "Pesan Anda...",
+    form_submit: "Kirim Pesan", findme_title: "Temukan Saya",
+    footer_rights: "Hak cipta dilindungi.", alert_sent: "Terima kasih! Pesan terkirim."
+  },
+  en: {
+    loading: "LABIIB // SYSTEM",
+    nav_home: "Home", nav_about: "About", nav_portfolio: "Portfolio", nav_contact: "Contact",
+    home_badge: "Available for collaboration",
+    home_title: "Hi, I'm<br><span>LABIIB AL<br>GHOFFUUR</span>",
+    home_tagline: "Empowering the Nation Through Technology & Cybersecurity",
+    home_role: "Cybersecurity Enthusiast · Polyglot · Independent Learner",
+    home_desc: "A self-directed learner passionate about cybersecurity and app development. Fluent in Russian, Spanish, and Turkish — skills that sharpen analytical thinking, precision, and adaptability.",
+    btn_projects: "View Projects", btn_contact: "Contact Me",
+    profile_hint: "Tap to reveal",
+    about_label: "01 — About", about_title: "About Me",
+    about_org_title: "Organizations & Experience", about_skills_title: "Skills",
+    skill_1: "Cybersecurity Fundamentals", skill_2: "Web & Mobile Development",
+    skill_3: "AI Integration", skill_4: "Language Learning (RU · ES · TR)",
+    skill_5: "Linux & Terminal", skill_6: "Application Development",
+    stat_projects: "Projects", stat_orgs: "Organizations", stat_langs: "Languages",
+    portfolio_label: "02 — Work", portfolio_title: "Portfolio",
+    tab_projects: "Projects", tab_certs: "Certificates", tab_tech: "Tech Stack",
+    proj_ai: "AI-powered personal assistant for productivity and daily task automation.",
+    proj_cyber: "Collection of scripts & automation tools for cybersecurity analysis.",
+    proj_rus: "Interactive app for learning Russian in a fun and easy way.",
+    proj_chi: "Mandarin learning platform from beginner to intermediate level.",
+    proj_jp1: "Japanese vocabulary memorization app (N5 level).",
+    proj_jp2: "Learn to write & read Hiragana with interactive practice.",
+    proj_ngaji: "Digital app to help learn Quran recitation.",
+    proj_study: "To-do list & study planner for better time management.",
+    proj_parent: "Educational and parenting support app.",
+    cert1_title: "Russian Language (CEFR B1/B2)",
+    cert1_desc: "Certified intermediate/advanced proficiency in Russian.",
+    cert2_title: "BahasaKita.id Digital Certificate",
+    cert2_desc: "Official participant certificate for “Learning Languages in the Digital Era” webinar.",
+    cert3_title: "PORSIMAPTAR XXI “Eye of Universe”",
+    cert3_desc: "Official participant certificate for national astronomy & science webinar.",
+    tech_dev_title: "Development Tools", tech_ai_title: "AI & LLM Tools",
+    contact_label: "03 — Contact", contact_title: "Contact Me",
+    form_name: "Your Name", form_email: "Your Email", form_msg: "Your Message...",
+    form_submit: "Send Message", findme_title: "Find Me",
+    footer_rights: "All rights reserved.", alert_sent: "Thank you! Message sent."
+  }
+};
+
+let lang = localStorage.getItem('lang') || 'id';
+let theme = localStorage.getItem('theme') || 'dark';
+
+function applyLang(l) {
+  lang = l;
+  localStorage.setItem('lang', l);
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const k = el.getAttribute('data-i18n');
+    if (T[l][k]) el.innerHTML = T[l][k];
+  });
+  document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+    const k = el.getAttribute('data-i18n-ph');
+    if (T[l][k]) el.placeholder = T[l][k];
+  });
+  document.getElementById('langBtn').textContent = l === 'id' ? 'EN' : 'ID';
+  document.documentElement.lang = l;
+}
+
+function applyTheme(t) {
+  theme = t;
+  localStorage.setItem('theme', t);
+  document.body.classList.toggle('light', t === 'light');
+  document.getElementById('themeBtn').textContent = t === 'light' ? '☀️' : '🌙';
+}
+
+document.getElementById('langBtn').onclick = () => applyLang(lang === 'id' ? 'en' : 'id');
+document.getElementById('themeBtn').onclick = () => applyTheme(theme === 'dark' ? 'light' : 'dark');
+
+// Loader
+window.addEventListener('load', () => {
+  applyLang(lang);
+  applyTheme(theme);
+  const bar = document.getElementById('loaderBar');
+  let p = 0;
+  const iv = setInterval(() => {
+    p += Math.random() * 16 + 5;
+    if (p >= 100) {
+      p = 100;
+      clearInterval(iv);
+      setTimeout(() => document.getElementById('loader').classList.add('hide'), 400);
+    }
+    bar.style.width = p + '%';
+  }, 90);
+});
+
+// Nav scroll
+window.addEventListener('scroll', () => {
+  document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 20);
+  let cur = '';
+  document.querySelectorAll('section').forEach(sec => {
+    if (pageYOffset >= sec.offsetTop - 160) cur = sec.id;
+  });
+  document.querySelectorAll('.nav-links a').forEach(a => {
+    a.classList.toggle('active', a.getAttribute('href') === '#' + cur);
+  });
+});
+
+// Smooth scroll
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    document.querySelector(a.getAttribute('href'))?.scrollIntoView({ behavior: 'smooth' });
+  });
+});
+
+// Tabs
+document.querySelectorAll('.tab').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.tab).classList.add('active');
+  });
+});
+
+// Counters
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting && !e.target.dataset.done) {
+      e.target.dataset.done = '1';
+      const target = +e.target.dataset.target;
+      let n = 0;
+      const step = Math.ceil(target / 35);
+      const t = setInterval(() => {
+        n += step;
+        if (n >= target) { n = target; clearInterval(t); }
+        e.target.textContent = n;
+      }, 28);
+    }
+  });
+}, { threshold: 0.5 });
+document.querySelectorAll('.stat-num').forEach(el => obs.observe(el));
+
+// Photo flip
+document.getElementById('photoBox').addEventListener('click', function() {
+  this.classList.toggle('flip');
+});
+
+// Lightbox
+function openLb(src) {
+  document.getElementById('lbImg').src = src;
+  document.getElementById('lightbox').classList.add('show');
+}
+function closeLb() {
+  document.getElementById('lightbox').classList.remove('show');
+}
+</script>
+</body>
+</html>
